@@ -32,12 +32,15 @@ int main(){
                 fprintf(fp_write_even, "%s", file_string);
             }
         } else {
+            // Viene esclusa l'ultima parte di testo perché si prova a leggere 100 char i quali eccederanno la lunghezza del testo, attrivando il flag feof che simboleggia il tentativo di leggere oltre la fine del file.
             fgets(file_string, 100, fp_read);
             if (!feof(fp_read)){
                 puts(name);
                 puts("Sto leggendo: ");
                 puts(file_string);
                 fputs(file_string,fp_write_odd);
+            }else{
+                return 4;
             }
         }
     }
