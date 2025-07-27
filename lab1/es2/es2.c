@@ -25,13 +25,26 @@ int main(){
 
     while (!feof(fp_read)){
         file_char = fgetc(fp_read);
-        if(!feof(fp_read)){
+        if (!feof(fp_read)){
             switch (choice){
                 case 'C':
-                    printf("\nStampato su console: %c", file_char);
+                    printf("Scrittura su console: %c", file_char);
                     break;
                 case 'F':
+                    fputc(file_char, fp_write);
+                    printf("\nCarattere salvato su file: ");
+                    putchar(file_char);
+                    break;
+                default:
+                    printf("Errore di scelta\n");
+                    return 3;
             }
         }
     }
+
+    fclose(fp_read);
+    fclose(fp_write);
+
+    return 0;
+
 }
