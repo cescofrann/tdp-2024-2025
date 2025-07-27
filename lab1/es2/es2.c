@@ -28,7 +28,7 @@ int main(){
         if (!feof(fp_read)){
             switch (choice){
                 case 'C':
-                    printf("Scrittura su console: %c", file_char);
+                    printf("\nScrittura su console: %c", file_char);
                     break;
                 case 'F':
                     fputc(file_char, fp_write);
