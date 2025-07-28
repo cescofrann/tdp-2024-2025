@@ -40,5 +40,8 @@ int main(){
             }
             printf("L'area del cerchio è: %.2f", area);
             break;
+        default:
+            printf("Errore durante la scelta");
+            break;
     }
 }
