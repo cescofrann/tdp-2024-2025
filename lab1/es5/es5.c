@@ -3,7 +3,7 @@
 int main(){
     char segno;
     float op1, op2, ris;
-    printf("Scrivi l'operazione ");
+    printf("Scrivi il segno dell'operazione ");
     segno  = getchar();
 
     printf("Scrivi i due operatori separati da uno spazio: ");
