@@ -7,8 +7,8 @@ void counter(char c, int *counter, int nrealc, int *countnrealc, FILE *fout);
 int main(){
     FILE *fp_read, *fp_write;
     char carattere, successivo;
-    char *punteggiatura = ".,;:!?'";
-    int count = 0, nrealchar = 0;
+    char *punteggiatura = ".,;:!?'()";
+    int count = 0, nrealchar = 0, flag = 0;
 
     if ((fp_read = fopen("input.txt", "r")) == NULL) {
         printf("Errore di apertura del file");
@@ -30,30 +30,27 @@ int main(){
         }else if (strchr(punteggiatura,carattere) != NULL){     
 
             counter(carattere,  &count, 1, &nrealchar, fp_write);
-            successivo = fgetc(fp_read);
+            flag = 1;
 
-            if (successivo != ' ' && successivo != '\n'){
-                counter(32, &count, 0, &nrealchar, fp_write);
-                counter(successivo, &count, 1, &nrealchar, fp_write);
-            }else{
-                counter(successivo, &count, 1, &nrealchar, fp_write);
-                continue;
-            }
+            
             
             if (carattere == '!' || carattere == '?' || carattere == '.'){
                 
-                counter(carattere, &count, 1, &nrealchar, fp_write);
-                
-                carattere = successivo;
+                carattere = fgetc(fp_read);
                 while(!isalpha(carattere) && !feof(fp_read)){
                     counter(carattere,  &count, 1, &nrealchar, fp_write);
                     carattere = fgetc(fp_read);
+                    flag = 0;
                 }
+
                 counter(toupper(carattere),  &count, 0, &nrealchar, fp_write);                
             }
-            carattere = successivo;
-            continue;
+
         }else{
+            if(carattere != ' ' && carattere != '\n' && flag == 1){
+                counter(32, &count, 0, &nrealchar, fp_write);
+            }
+            flag = 0;
             counter(carattere, &count, 1, &nrealchar, fp_write);
         }
         carattere = fgetc(fp_read);
