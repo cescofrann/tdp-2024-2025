@@ -12,8 +12,9 @@ int main(){
 
     char key[5], parola[15];
     char *pstr;
+    char carattere;
     int cod, nr, flag = 0;
-    int len_chiave;
+    int lparola, lchiave;
 
     
     if((fin_sorgente = fopen("sorgente.txt", "r")) == NULL){
@@ -40,25 +41,31 @@ int main(){
 
     
     while((fscanf(fin_sorgente, "%s", &parola))!= EOF){
+        fscanf(fin_sorgente, "%c", &carattere);
         for(int j=0; j< nr && flag == 0; j++){
             if(strlen(parola) >= strlen(contenitore[j].chiave)){
                 if((pstr = strstr(parola, contenitore[j].chiave)) != NULL){
                     // Qui ho trovato la prima sottostringa utile
-                    if(strlen(contenitore[j].codice) == strlen(contenitore[j].chiave)){
-                        len_chiave = strlen(contenitore[j].chiave);
-                        strncpy(pstr, contenitore[j].chiave, len_chiave);
-                    }else{
-                        // Da aggiungere questa parte
+                    lparola = strlen(parola);
+                    lchiave = strlen(contenitore[j].chiave);
+                    for(int n=0; n< (lparola - lchiave); n++){
+                        printf("%c", parola[n]);
                     }
+                    printf("$%d$", contenitore[j].codice);
                     flag = 1;
                 }
             }
         }
-        // Stampa su file da aggiungere
+        if(flag==0){
+            printf("%s", parola);
+        }
         flag = 0;
+        if(carattere == ' '){
+            printf(" ");
+        }else if(carattere == '\n'){
+            printf("\n");
+        }
     }
-    
-
 
     fclose(fin_sorgente);
     fclose(fin_dizionario);
