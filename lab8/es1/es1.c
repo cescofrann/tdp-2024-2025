@@ -3,37 +3,47 @@
 #define MAXC 50
 #define MAXR 50
 
-void leggi_mat(FILE *fin, int mat[][MAXC], int nc, int nr);
+void leggiMatrice(FILE *fin, int mat[][MAXC], int *ncp, int *nrp);
 void display_mat(int mat[][MAXC], int nc, int nr);
 int core(int mat[][MAXC], int nc, int nr, int scelta);
 int find_width(int mat[][MAXC], int nc, int nr, int coords[], int h);
+int find_height(int mat[][MAXC], int nc, int nr, int coords[], int w);
+int riconosciRegione(int mat[][MAXC], int nc, int nr, int r, int c, int *bp, int *hp);
 
 int main(){
     FILE *fp_read;     
     int matrice[MAXR][MAXC];
-    int nr, nc;
+    int nrighe, ncolonne, base, altezza;
 
     if((fp_read = fopen("input.txt", "r")) == NULL){
         printf("Errore nell'apertura del file");
         return 1;
     }
 
-    fscanf(fp_read, "%d %d", &nr, &nc);
-    leggi_mat(fp_read, matrice, nc, nr);
+    
+    leggiMatrice(fp_read, matrice, &ncolonne, &nrighe);
 
-    display_mat(matrice, nc, nr);
+    display_mat(matrice, ncolonne, nrighe);
 
-    core(matrice, nc, nr, 1);
-    core(matrice, nc, nr, 2);
-    core(matrice, nc, nr, 3);
+    if(riconosciRegione(matrice, nrighe, ncolonne, 1, 1, &base, &altezza)){
+        printf("Rettangolo con estremo (%d,%d), base:%d, altezza:%d\n", 1,2, base, altezza);
+    }else printf("Non è stato individuato l'inizio di un rettangolo in (%d,%d)\n", base, altezza);
+
+
+    core(matrice, ncolonne, nrighe, 1);
+    core(matrice, ncolonne, nrighe, 2);
+    core(matrice, ncolonne, nrighe, 3);
 
     fclose(fp_read);
     return 0;
 }
 
-void leggi_mat(FILE *fin, int mat[][MAXC], int nc, int nr){
-    for(int i=0; i<nr; i++){
-        for(int j=0; j<nc; j++){
+void leggiMatrice(FILE *fin, int mat[][MAXC], int *ncp, int *nrp){ 
+    // *ncp -> valore di ncolonne
+    // ncp -> indirizzo di ncolonne
+    fscanf(fin, "%d %d", nrp, ncp);
+    for(int i=0; i<*nrp; i++){
+        for(int j=0; j<*ncp; j++){
             fscanf(fin, "%d", &mat[i][j]);
         }
     }
@@ -47,6 +57,25 @@ void display_mat(int mat[][MAXC], int nc, int nr){
         }
         printf("\n");
     }
+}
+
+int riconosciRegione(int mat[][MAXC], int nr, int nc, int r, int c, int *bp, int *hp){
+    int coords[]= {r, c};
+    *bp=0;
+    if(mat[r][c]==0) return 0;
+    else{
+
+        if((c==0 && r==0) || (c>0 && mat[r][c-1]!=1 && r==0) || (r>0 && c==0 && mat[c][r-1]!=1) || (c>0 && r>0 && mat[r-1][c]!=1 && mat[r][c-1]!=1)){
+            while(mat[r][c]==1 && c<nc){
+                c++;
+                *bp+=1;
+            }
+            *hp=find_height(mat, nc,nr, coords, *bp);
+            return 1;
+        }
+
+    }
+    return 0;
 }
 
 int find_width(int mat[][MAXC], int nc, int nr, int coords[], int h){
